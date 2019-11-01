@@ -51,7 +51,22 @@ public class Sorting : MonoBehaviour
 
     public void StarSorting()
     {
+        sortingType = (SortingTypes)dropDown.value;
 
+        switch (sortingType)
+        {
+            case SortingTypes.BubbleSort:
+                StartCoroutine("BubbleSort");
+                break;
+            case SortingTypes.ShakerSort:
+                StartCoroutine("ShakerSort");
+                break;
+            case SortingTypes.CombSort:
+                StartCoroutine("CombSort");
+                break;
+            default:
+                break;
+        }
     }
 
     public void MixElements()
@@ -60,17 +75,42 @@ public class Sorting : MonoBehaviour
     }
 
     #region SORTING TYPES
-    IEnumerable BubbleSort()
+    IEnumerator BubbleSort()
+    {
+        bool sorted = true;
+        int max = COUNT;
+
+        /*for (int i = 0; i < COUNT; i++)
+            print(elements[i].transform.localScale.y + " ");*/
+
+        while (sorted)
+        {
+            sorted = false;
+            for (int i=0; i<max-1; i++)
+            {
+                if (elements[i].transform.localScale.y > elements[i+1].transform.localScale.y)
+                {
+                    GameObject temp = elements[i];
+                    elements[i] = elements[i + 1];
+                    elements[i + 1] = temp;
+                    sorted = true;
+                }
+            }
+            max--;
+        }
+
+        for (int i = 0; i < COUNT; i++)
+            print(elements[i].transform.localScale.y + " ");
+
+        yield return null;
+    }
+
+    IEnumerator ShakerSort()
     {
         yield return null;
     }
 
-    IEnumerable ShakerSort()
-    {
-        yield return null;
-    }
-
-    IEnumerable CombSort()
+    IEnumerator CombSort()
     {
         yield return null;
     }
