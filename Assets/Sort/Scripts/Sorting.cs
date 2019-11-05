@@ -56,7 +56,7 @@ public class Sorting : MonoBehaviour
         switch (sortingType)
         {
             case SortingTypes.BubbleSort:
-                StartCoroutine("BubbleSort");
+                BubbleSort();
                 break;
             case SortingTypes.ShakerSort:
                 StartCoroutine("ShakerSort");
@@ -75,13 +75,10 @@ public class Sorting : MonoBehaviour
     }
 
     #region SORTING TYPES
-    IEnumerator BubbleSort()
+    private void BubbleSort()
     {
         bool sorted = true;
         int max = COUNT;
-
-        /*for (int i = 0; i < COUNT; i++)
-            print(elements[i].transform.localScale.y + " ");*/
 
         while (sorted)
         {
@@ -90,19 +87,21 @@ public class Sorting : MonoBehaviour
             {
                 if (elements[i].transform.localScale.y > elements[i+1].transform.localScale.y)
                 {
+                    Vector3 posOne = elements[i].transform.position;
+                    Vector3 posTwo = elements[i + 1].transform.position;
+
                     GameObject temp = elements[i];
                     elements[i] = elements[i + 1];
                     elements[i + 1] = temp;
+
+                    elements[i].transform.position = new Vector3(posOne.x, elements[i].transform.localScale.y / 2, 0f);
+                    elements[i + 1].transform.position = new Vector3(posTwo.x, elements[i+1].transform.localScale.y / 2, 0f);
+
                     sorted = true;
                 }
             }
             max--;
         }
-
-        for (int i = 0; i < COUNT; i++)
-            print(elements[i].transform.localScale.y + " ");
-
-        yield return null;
     }
 
     IEnumerator ShakerSort()
@@ -115,4 +114,14 @@ public class Sorting : MonoBehaviour
         yield return null;
     }
     #endregion
+
+    /*IEnumerator ElementTranslate(Vector3 _pos, Vector3 _newPos)
+    {
+        while (Vector3.Distance(_pos, _newPos) > 0.01f)
+        {
+            _pos = Vector3.Lerp(_pos, _newPos, 0.5f * Time.deltaTime);
+
+            yield return new WaitForSeconds(0.1f);
+        }
+    }*/
 }
