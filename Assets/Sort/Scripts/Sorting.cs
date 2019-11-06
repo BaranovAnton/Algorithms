@@ -8,11 +8,14 @@ public class Sorting : MonoBehaviour
     private enum SortingTypes { BubbleSort, ShakerSort, CombSort }
 
     private const int COUNT = 21; // Count of elements for sorting
+    private const int SPEED = 50; // Speed changing elements while sorting
+    private const float DELAY = 0.05f; // Delay between frames chaning elements position
 
     private SortingTypes sortingType;
     private List<GameObject> elements = new List<GameObject>();
 
     public Dropdown dropDown;
+    public Color pointerColor;
 
     void Start()
     {
@@ -56,11 +59,7 @@ public class Sorting : MonoBehaviour
         switch (sortingType)
         {
             case SortingTypes.BubbleSort:
-                //BubbleSort();
-
-                IEnumerator cor = ElementTranslate(elements[0], elements[1]);
-                StartCoroutine(cor);
-
+                StartCoroutine("BubbleSort");
                 break;
             case SortingTypes.ShakerSort:
                 StartCoroutine("ShakerSort");
@@ -79,7 +78,7 @@ public class Sorting : MonoBehaviour
     }
 
     #region SORTING TYPES
-    private void BubbleSort()
+    IEnumerator BubbleSort()
     {
         bool sorted = true;
         int max = COUNT;
@@ -91,21 +90,28 @@ public class Sorting : MonoBehaviour
             {
                 if (elements[i].transform.localScale.y > elements[i+1].transform.localScale.y)
                 {
-                    /*Vector3 posOne = elements[i].transform.position;
-                    Vector3 posTwo = elements[i + 1].transform.position;*/
-
+                    // Sorting
                     GameObject temp = elements[i];
                     elements[i] = elements[i + 1];
                     elements[i + 1] = temp;
 
-                    IEnumerator cor = ElementTranslate(elements[i], elements[i+1]);
-                    StartCoroutine(cor);
+                    // Visualization
+                    Vector3 posOne = elements[i].transform.position;
+                    Vector3 newPosOne = new Vector3(elements[i + 1].transform.position.x, elements[i].transform.localScale.y / 2, 0f);
 
-                    //elements[i].transform.position = new Vector3(posOne.x, elements[i].transform.localScale.y / 2, 0f);
-                    /*IEnumerator cor = ElementTranslate(elements[i].transform.position, new Vector3(posOne.x, elements[i].transform.localScale.y / 2, 0f));
-                    StartCoroutine(cor);*/
+                    Vector3 posTwo = elements[i + 1].transform.position;
+                    Vector3 newPosTwo = new Vector3(elements[i].transform.position.x, elements[i + 1].transform.localScale.y / 2, 0f);
 
-                    //elements[i + 1].transform.position = new Vector3(posTwo.x, elements[i+1].transform.localScale.y / 2, 0f);
+                    while (Vector3.Distance(posOne, newPosOne) > 0.01f)
+                    {
+                        posOne = Vector3.Lerp(posOne, newPosOne, SPEED * Time.deltaTime);
+                        elements[i].transform.position = posOne;
+
+                        posTwo = Vector3.Lerp(posTwo, newPosTwo, SPEED * Time.deltaTime);
+                        elements[i + 1].transform.position = posTwo;
+
+                        yield return new WaitForSeconds(DELAY);
+                    }
 
                     sorted = true;
                 }
@@ -124,27 +130,4 @@ public class Sorting : MonoBehaviour
         yield return null;
     }
     #endregion
-
-    IEnumerator ElementTranslate(GameObject _goPrev, GameObject _goNext)
-    {
-        Vector3 posOne = _goNext.transform.position;
-        Vector3 posTwo = _goPrev.transform.position;
-
-        Vector3 _posPrev = _goPrev.transform.position;
-        Vector3 _newPosPrev = new Vector3(posOne.x, _goPrev.transform.localScale.y / 2, 0f);
-
-        Vector3 _posNext = _goNext.transform.position;
-        Vector3 _newPosNext = new Vector3(posTwo.x, _goNext.transform.localScale.y / 2, 0f);
-
-        while (Vector3.Distance(_posPrev, _newPosPrev) > 0.01f)
-        {
-            _posPrev = Vector3.Lerp(_posPrev, _newPosPrev, 5 * Time.deltaTime);
-            _goPrev.transform.position = _posPrev;
-
-            _posNext = Vector3.Lerp(_posNext, _newPosNext, 10 * Time.deltaTime);
-            _goNext.transform.position = _posNext;
-
-            yield return new WaitForSeconds(0.1f);
-        }
-    }
 }
