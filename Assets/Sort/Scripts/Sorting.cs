@@ -56,7 +56,11 @@ public class Sorting : MonoBehaviour
         switch (sortingType)
         {
             case SortingTypes.BubbleSort:
-                BubbleSort();
+                //BubbleSort();
+
+                IEnumerator cor = ElementTranslate(elements[0], elements[1]);
+                StartCoroutine(cor);
+
                 break;
             case SortingTypes.ShakerSort:
                 StartCoroutine("ShakerSort");
@@ -87,15 +91,21 @@ public class Sorting : MonoBehaviour
             {
                 if (elements[i].transform.localScale.y > elements[i+1].transform.localScale.y)
                 {
-                    Vector3 posOne = elements[i].transform.position;
-                    Vector3 posTwo = elements[i + 1].transform.position;
+                    /*Vector3 posOne = elements[i].transform.position;
+                    Vector3 posTwo = elements[i + 1].transform.position;*/
 
                     GameObject temp = elements[i];
                     elements[i] = elements[i + 1];
                     elements[i + 1] = temp;
 
-                    elements[i].transform.position = new Vector3(posOne.x, elements[i].transform.localScale.y / 2, 0f);
-                    elements[i + 1].transform.position = new Vector3(posTwo.x, elements[i+1].transform.localScale.y / 2, 0f);
+                    IEnumerator cor = ElementTranslate(elements[i], elements[i+1]);
+                    StartCoroutine(cor);
+
+                    //elements[i].transform.position = new Vector3(posOne.x, elements[i].transform.localScale.y / 2, 0f);
+                    /*IEnumerator cor = ElementTranslate(elements[i].transform.position, new Vector3(posOne.x, elements[i].transform.localScale.y / 2, 0f));
+                    StartCoroutine(cor);*/
+
+                    //elements[i + 1].transform.position = new Vector3(posTwo.x, elements[i+1].transform.localScale.y / 2, 0f);
 
                     sorted = true;
                 }
@@ -115,13 +125,26 @@ public class Sorting : MonoBehaviour
     }
     #endregion
 
-    /*IEnumerator ElementTranslate(Vector3 _pos, Vector3 _newPos)
+    IEnumerator ElementTranslate(GameObject _goPrev, GameObject _goNext)
     {
-        while (Vector3.Distance(_pos, _newPos) > 0.01f)
+        Vector3 posOne = _goNext.transform.position;
+        Vector3 posTwo = _goPrev.transform.position;
+
+        Vector3 _posPrev = _goPrev.transform.position;
+        Vector3 _newPosPrev = new Vector3(posOne.x, _goPrev.transform.localScale.y / 2, 0f);
+
+        Vector3 _posNext = _goNext.transform.position;
+        Vector3 _newPosNext = new Vector3(posTwo.x, _goNext.transform.localScale.y / 2, 0f);
+
+        while (Vector3.Distance(_posPrev, _newPosPrev) > 0.01f)
         {
-            _pos = Vector3.Lerp(_pos, _newPos, 0.5f * Time.deltaTime);
+            _posPrev = Vector3.Lerp(_posPrev, _newPosPrev, 5 * Time.deltaTime);
+            _goPrev.transform.position = _posPrev;
+
+            _posNext = Vector3.Lerp(_posNext, _newPosNext, 10 * Time.deltaTime);
+            _goNext.transform.position = _posNext;
 
             yield return new WaitForSeconds(0.1f);
         }
-    }*/
+    }
 }
