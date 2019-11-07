@@ -15,6 +15,7 @@ public class Sorting : MonoBehaviour
     private List<GameObject> elements = new List<GameObject>();
 
     public Dropdown dropDown;
+    public Color defaultColor;
     public Color pointerColor;
 
     void Start()
@@ -47,6 +48,7 @@ public class Sorting : MonoBehaviour
             block.transform.localScale = new Vector3(0.9f, height, 0.9f);
             block.transform.position = new Vector3(pos, height/2, 0f);
             block.transform.SetParent(this.transform);
+            block.GetComponent<MeshRenderer>().material.color = defaultColor;
 
             elements.Add(block);
         }
@@ -88,6 +90,9 @@ public class Sorting : MonoBehaviour
             sorted = false;
             for (int i=0; i<max-1; i++)
             {
+                // Change color pointed element
+                elements[i].gameObject.GetComponent<MeshRenderer>().material.color = pointerColor;
+
                 if (elements[i].transform.localScale.y > elements[i+1].transform.localScale.y)
                 {
                     // Sorting
@@ -114,9 +119,20 @@ public class Sorting : MonoBehaviour
                     }
 
                     sorted = true;
+                } else
+                {
+
+                    elements[i].gameObject.GetComponent<MeshRenderer>().material.color = defaultColor;
                 }
             }
             max--;
+
+            // Change color sorted elements
+            if (sorted)
+                elements[max].gameObject.GetComponent<MeshRenderer>().material.color = pointerColor;
+            else
+                for (int i=0; i<=max; i++)
+                    elements[i].gameObject.GetComponent<MeshRenderer>().material.color = pointerColor;
         }
     }
 
