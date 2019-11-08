@@ -7,16 +7,16 @@ public class Sorting : MonoBehaviour
 {
     private enum SortingTypes { BubbleSort, ShakerSort, CombSort }
 
+    //TODO: Create dynamic count
     private const int COUNT = 21; // Count of elements for sorting
-    private const int SPEED = 50; // Speed changing elements while sorting
-    private const float DELAY = 0.05f; // Delay between frames chaning elements position
+
+    private Color defaultColor = Color.black;
+    private Color pointerColor = Color.white;
 
     private SortingTypes sortingType;
     private List<GameObject> elements = new List<GameObject>();
 
     public Dropdown dropDown;
-    public Color defaultColor;
-    public Color pointerColor;
 
     void Start()
     {
@@ -61,14 +61,21 @@ public class Sorting : MonoBehaviour
         switch (sortingType)
         {
             case SortingTypes.BubbleSort:
-                StartCoroutine("BubbleSort");
+                BubbleSorting bubbleSorting = new BubbleSorting();
+                IEnumerator bubble = bubbleSorting.BubbleSort(elements);
+                StartCoroutine(bubble);
                 break;
+
             case SortingTypes.ShakerSort:
-                StartCoroutine("ShakerSort");
+                ShakerSorting shakerSorting = new ShakerSorting();
+                IEnumerator shaker = shakerSorting.ShakerSort(elements);
+                StartCoroutine(shaker);
                 break;
+
             case SortingTypes.CombSort:
-                StartCoroutine("CombSort");
+                
                 break;
+
             default:
                 break;
         }
@@ -78,144 +85,4 @@ public class Sorting : MonoBehaviour
     {
 
     }
-
-    #region SORTING TYPES
-    IEnumerator BubbleSort()
-    {
-        bool sorted = true;
-        int max = COUNT;
-
-        while (sorted)
-        {
-            sorted = false;
-            for (int i=0; i<max-1; i++)
-            {
-                // Change color pointed element
-                elements[i].gameObject.GetComponent<MeshRenderer>().material.color = pointerColor;
-
-                if (elements[i].transform.localScale.y > elements[i+1].transform.localScale.y)
-                {
-                    // Sorting
-                    GameObject temp = elements[i];
-                    elements[i] = elements[i + 1];
-                    elements[i + 1] = temp;
-
-                    // Visualization
-                    Vector3 posOne = elements[i].transform.position;
-                    Vector3 newPosOne = new Vector3(elements[i + 1].transform.position.x, elements[i].transform.localScale.y / 2, 0f);
-
-                    Vector3 posTwo = elements[i + 1].transform.position;
-                    Vector3 newPosTwo = new Vector3(elements[i].transform.position.x, elements[i + 1].transform.localScale.y / 2, 0f);
-
-                    while (Vector3.Distance(posOne, newPosOne) > 0.01f)
-                    {
-                        posOne = Vector3.Lerp(posOne, newPosOne, SPEED * Time.deltaTime);
-                        elements[i].transform.position = posOne;
-
-                        posTwo = Vector3.Lerp(posTwo, newPosTwo, SPEED * Time.deltaTime);
-                        elements[i + 1].transform.position = posTwo;
-
-                        yield return new WaitForSeconds(DELAY);
-                    }
-
-                    sorted = true;
-                } else
-                {
-
-                    elements[i].gameObject.GetComponent<MeshRenderer>().material.color = defaultColor;
-                }
-            }
-            max--;
-
-            // Change color sorted elements
-            if (sorted)
-                elements[max].gameObject.GetComponent<MeshRenderer>().material.color = pointerColor;
-            else
-                for (int i=0; i<=max; i++)
-                    elements[i].gameObject.GetComponent<MeshRenderer>().material.color = pointerColor;
-        }
-    }
-
-    IEnumerator ShakerSort()
-    {
-        bool sorted = true;
-
-        int begin = 0;
-        int end = COUNT - 1;
-
-        while (sorted)
-        {
-            sorted = false;
-
-            for (int i=begin; i<end; i++)
-            {
-                if (elements[i].transform.localScale.y > elements[i + 1].transform.localScale.y)
-                {
-                    // Sorting
-                    GameObject temp = elements[i];
-                    elements[i] = elements[i + 1];
-                    elements[i + 1] = temp;
-                    sorted = true;
-
-                    // Visualization
-                    Vector3 posOne = elements[i].transform.position;
-                    Vector3 newPosOne = new Vector3(elements[i + 1].transform.position.x, elements[i].transform.localScale.y / 2, 0f);
-
-                    Vector3 posTwo = elements[i + 1].transform.position;
-                    Vector3 newPosTwo = new Vector3(elements[i].transform.position.x, elements[i + 1].transform.localScale.y / 2, 0f);
-
-                    while (Vector3.Distance(posOne, newPosOne) > 0.01f)
-                    {
-                        posOne = Vector3.Lerp(posOne, newPosOne, SPEED * Time.deltaTime);
-                        elements[i].transform.position = posOne;
-
-                        posTwo = Vector3.Lerp(posTwo, newPosTwo, SPEED * Time.deltaTime);
-                        elements[i + 1].transform.position = posTwo;
-
-                        yield return new WaitForSeconds(DELAY);
-                    }
-                }
-            }
-
-            if (sorted) end--;
-
-            for (int i=end; i>begin; i--)
-            {
-                if (elements[i].transform.localScale.y < elements[i - 1].transform.localScale.y)
-                {
-                    // Sorting
-                    GameObject temp = elements[i];
-                    elements[i] = elements[i - 1];
-                    elements[i - 1] = temp;
-                    sorted = true;
-
-                    // Visualization
-                    Vector3 posOne = elements[i].transform.position;
-                    Vector3 newPosOne = new Vector3(elements[i - 1].transform.position.x, elements[i].transform.localScale.y / 2, 0f);
-
-                    Vector3 posTwo = elements[i - 1].transform.position;
-                    Vector3 newPosTwo = new Vector3(elements[i].transform.position.x, elements[i - 1].transform.localScale.y / 2, 0f);
-
-                    while (Vector3.Distance(posOne, newPosOne) > 0.01f)
-                    {
-                        posOne = Vector3.Lerp(posOne, newPosOne, SPEED * Time.deltaTime);
-                        elements[i].transform.position = posOne;
-
-                        posTwo = Vector3.Lerp(posTwo, newPosTwo, SPEED * Time.deltaTime);
-                        elements[i - 1].transform.position = posTwo;
-
-                        yield return new WaitForSeconds(DELAY);
-                    }
-                }
-            }
-
-            if (sorted) begin++;
-        }
-    }
-
-    IEnumerator CombSort()
-    {
-        yield return null;
-    }
-    #endregion
 }
