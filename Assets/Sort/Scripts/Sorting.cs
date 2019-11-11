@@ -81,8 +81,21 @@ public class Sorting : MonoBehaviour
         }
     }
 
-    public void MixElements()
+    public void ShuffleElements()
     {
+        int randomCount = elements.Count;
 
+        while (randomCount > 1)
+        {
+            randomCount--;
+            int randomIndex = Random.Range(0, elements.Count);
+
+            GameObject temp = elements[randomIndex];
+            elements[randomIndex] = elements[randomCount];
+            elements[randomCount] = temp;
+
+            /*elements[random1].transform.position = new Vector3(elements[random2].transform.position.x, elements[random1].transform.localScale.y / 2, 0f);
+            elements[random2].transform.position = new Vector3(elements[random1].transform.position.x, elements[random2].transform.localScale.y / 2, 0f);*/
+        }
     }
 }

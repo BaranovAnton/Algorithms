@@ -12,7 +12,7 @@ public class BubbleSorting : MonoBehaviour
         Color defaultColor = Color.black;
         Color pointerColor = Color.white;
 
-    bool sorted = true;
+        bool sorted = true;
         int max = elements.Count;
 
         while (sorted)

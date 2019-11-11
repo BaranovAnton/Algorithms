@@ -150,8 +150,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dropDown: {fileID: 276199037}
-  defaultColor: {r: 0, g: 0, b: 0, a: 1}
-  pointerColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!4 &87877508
 Transform:
   m_ObjectHideFlags: 0
@@ -234,9 +232,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'MIX
-
-'
+  m_Text: SHUFFLE
 --- !u!222 &154958011
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -925,7 +921,7 @@ GameObject:
   - component: {fileID: 923499352}
   - component: {fileID: 923499351}
   m_Layer: 5
-  m_Name: Mix
+  m_Name: Shuffle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -993,7 +989,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 923499352}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 87877507}
+        m_MethodName: ShuffleElements
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &923499352
 MonoBehaviour:
   m_ObjectHideFlags: 0
