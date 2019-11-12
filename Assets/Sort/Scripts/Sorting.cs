@@ -73,7 +73,9 @@ public class Sorting : MonoBehaviour
                 break;
 
             case SortingTypes.CombSort:
-                
+                CombSorting combSorting = new CombSorting();
+                IEnumerator comb = combSorting.CombSort(elements);
+                StartCoroutine(comb);
                 break;
 
             default:

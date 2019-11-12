@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// https://en.wikipedia.org/wiki/Bubble_sort
+/// </summary>
 public class BubbleSorting : MonoBehaviour
 {
     public IEnumerator BubbleSort(List<GameObject> elements)

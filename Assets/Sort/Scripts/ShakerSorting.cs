@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// https://en.wikipedia.org/wiki/Cocktail_shaker_sort
+/// </summary>
 public class ShakerSorting : MonoBehaviour
 {
     public IEnumerator ShakerSort(List<GameObject> elements)
