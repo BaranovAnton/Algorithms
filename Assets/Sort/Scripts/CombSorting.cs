@@ -14,7 +14,7 @@ public class CombSorting : MonoBehaviour
 
         float shrink = 1.24733f;
         int step = elements.Count - 1;
-        
+
         while (step > 1)
         {
             for (int i=0; i + step < elements.Count; i++)
@@ -88,8 +88,23 @@ public class CombSorting : MonoBehaviour
         _elements[_index2] = temp;
     }
 
-    private void Visualization()
+    /*IEnumerator Visualization(List<GameObject> _elements, int _index1, int _index2)
     {
+        Vector3 posOne = _elements[_index1].transform.position;
+        Vector3 newPosOne = new Vector3(_elements[_index2].transform.position.x, _elements[_index1].transform.localScale.y / 2, 0f);
 
-    }
+        Vector3 posTwo = _elements[_index2].transform.position;
+        Vector3 newPosTwo = new Vector3(_elements[_index1].transform.position.x, _elements[_index2].transform.localScale.y / 2, 0f);
+
+        while (Vector3.Distance(posOne, newPosOne) > 0.01f)
+        {
+            posOne = Vector3.Lerp(posOne, newPosOne, SPEED * Time.deltaTime);
+            _elements[_index1].transform.position = posOne;
+
+            posTwo = Vector3.Lerp(posTwo, newPosTwo, SPEED * Time.deltaTime);
+            _elements[_index2].transform.position = posTwo;
+
+            yield return new WaitForSeconds(DELAY);
+        }
+    }*/
 }

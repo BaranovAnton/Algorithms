@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class Sorting : MonoBehaviour
 {
-    private enum SortingTypes { BubbleSort, ShakerSort, CombSort }
+    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort }
 
     //TODO: Create dynamic count
     private const int COUNT = 21; // Count of elements for sorting
@@ -76,6 +76,12 @@ public class Sorting : MonoBehaviour
                 CombSorting combSorting = new CombSorting();
                 IEnumerator comb = combSorting.CombSort(elements);
                 StartCoroutine(comb);
+                break;
+
+            case SortingTypes.InsertionSort:
+                InsertionSorting insertionSorting = new InsertionSorting();
+                IEnumerator insertion = insertionSorting.InsertionSort(elements);
+                StartCoroutine(insertion);
                 break;
 
             default:
