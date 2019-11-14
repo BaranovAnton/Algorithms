@@ -36,7 +36,7 @@ public class InsertionSorting : MonoBehaviour
 
                     yield return new WaitForSeconds(DELAY);
                 }
-
+                
                 j--;
             }
         }

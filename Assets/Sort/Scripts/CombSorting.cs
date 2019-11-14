@@ -7,11 +7,13 @@ using UnityEngine;
 /// </summary>
 public class CombSorting : MonoBehaviour
 {
+    #region Constants
+    const int SPEED = 50; // Speed changing elements while sorting
+    const float DELAY = 0.05f; // Delay between frames chaning elements position
+    #endregion
+
     public IEnumerator CombSort(List<GameObject> elements)
     {
-        const int SPEED = 50; // Speed changing elements while sorting
-        const float DELAY = 0.05f; // Delay between frames chaning elements position
-
         float shrink = 1.24733f;
         int step = elements.Count - 1;
 
@@ -23,23 +25,16 @@ public class CombSorting : MonoBehaviour
                 {
                     Swap(elements, i, i+step);
 
-                    // Visualization
-                    Vector3 posOne = elements[i].transform.position;
-                    Vector3 newPosOne = new Vector3(elements[i + step].transform.position.x, elements[i].transform.localScale.y / 2, 0f);
-
-                    Vector3 posTwo = elements[i + step].transform.position;
-                    Vector3 newPosTwo = new Vector3(elements[i].transform.position.x, elements[i + step].transform.localScale.y / 2, 0f);
+                    #region Visualization
+                    Vector3 posOne, newPosOne, posTwo, newPosTwo;
+                    CalcNewPositions(elements, i, i+step, out posOne, out newPosOne, out posTwo, out newPosTwo);
 
                     while (Vector3.Distance(posOne, newPosOne) > 0.01f)
                     {
-                        posOne = Vector3.Lerp(posOne, newPosOne, SPEED * Time.deltaTime);
-                        elements[i].transform.position = posOne;
-
-                        posTwo = Vector3.Lerp(posTwo, newPosTwo, SPEED * Time.deltaTime);
-                        elements[i + step].transform.position = posTwo;
-
+                        ChangePositions(elements, i, i + step, ref posOne, newPosOne, ref posTwo, newPosTwo);
                         yield return new WaitForSeconds(DELAY);
                     }
+                    #endregion
                 }
             }
 
@@ -55,25 +50,18 @@ public class CombSorting : MonoBehaviour
             {
                 if (elements[i].transform.localScale.y > elements[i + 1].transform.localScale.y)
                 {
-                    Swap(elements, i, i+1);
+                    Swap(elements, i, i + 1);
 
-                    // Visualization
-                    Vector3 posOne = elements[i].transform.position;
-                    Vector3 newPosOne = new Vector3(elements[i + 1].transform.position.x, elements[i].transform.localScale.y / 2, 0f);
-
-                    Vector3 posTwo = elements[i + 1].transform.position;
-                    Vector3 newPosTwo = new Vector3(elements[i].transform.position.x, elements[i + 1].transform.localScale.y / 2, 0f);
+                    #region Visualization
+                    Vector3 posOne, newPosOne, posTwo, newPosTwo;
+                    CalcNewPositions(elements, i, i+1, out posOne, out newPosOne, out posTwo, out newPosTwo);
 
                     while (Vector3.Distance(posOne, newPosOne) > 0.01f)
                     {
-                        posOne = Vector3.Lerp(posOne, newPosOne, SPEED * Time.deltaTime);
-                        elements[i].transform.position = posOne;
-
-                        posTwo = Vector3.Lerp(posTwo, newPosTwo, SPEED * Time.deltaTime);
-                        elements[i + 1].transform.position = posTwo;
-
+                        ChangePositions(elements, i, i+1, ref posOne, newPosOne, ref posTwo, newPosTwo);
                         yield return new WaitForSeconds(DELAY);
                     }
+                    #endregion
 
                     sorted = true;
                 }
@@ -81,6 +69,7 @@ public class CombSorting : MonoBehaviour
         }
     }
 
+    #region Additional private methods
     private void Swap(List<GameObject> _elements, int _index1, int _index2)
     {
         GameObject temp = _elements[_index1];
@@ -88,23 +77,20 @@ public class CombSorting : MonoBehaviour
         _elements[_index2] = temp;
     }
 
-    /*IEnumerator Visualization(List<GameObject> _elements, int _index1, int _index2)
+    private void CalcNewPositions(List<GameObject> elements, int index1, int index2, out Vector3 posOne, out Vector3 newPosOne, out Vector3 posTwo, out Vector3 newPosTwo)
     {
-        Vector3 posOne = _elements[_index1].transform.position;
-        Vector3 newPosOne = new Vector3(_elements[_index2].transform.position.x, _elements[_index1].transform.localScale.y / 2, 0f);
+        posOne = elements[index1].transform.position;
+        newPosOne = new Vector3(elements[index2].transform.position.x, elements[index1].transform.localScale.y / 2, 0f);
+        posTwo = elements[index2].transform.position;
+        newPosTwo = new Vector3(elements[index1].transform.position.x, elements[index2].transform.localScale.y / 2, 0f);
+    }
 
-        Vector3 posTwo = _elements[_index2].transform.position;
-        Vector3 newPosTwo = new Vector3(_elements[_index1].transform.position.x, _elements[_index2].transform.localScale.y / 2, 0f);
-
-        while (Vector3.Distance(posOne, newPosOne) > 0.01f)
-        {
-            posOne = Vector3.Lerp(posOne, newPosOne, SPEED * Time.deltaTime);
-            _elements[_index1].transform.position = posOne;
-
-            posTwo = Vector3.Lerp(posTwo, newPosTwo, SPEED * Time.deltaTime);
-            _elements[_index2].transform.position = posTwo;
-
-            yield return new WaitForSeconds(DELAY);
-        }
-    }*/
+    private void ChangePositions(List<GameObject> elements, int index1, int index2, ref Vector3 posOne, Vector3 newPosOne, ref Vector3 posTwo, Vector3 newPosTwo)
+    {
+        posOne = Vector3.Lerp(posOne, newPosOne, SPEED * Time.deltaTime);
+        elements[index1].transform.position = posOne;
+        posTwo = Vector3.Lerp(posTwo, newPosTwo, SPEED * Time.deltaTime);
+        elements[index2].transform.position = posTwo;
+    }
+    #endregion
 }
