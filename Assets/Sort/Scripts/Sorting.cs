@@ -5,6 +5,11 @@ using UnityEngine.UI;
 
 public class Sorting : MonoBehaviour
 {
+    #region Constants
+    const int SPEED = 50; // Speed changing elements while sorting
+    const float DELAY = 0.05f; // Delay between frames chaning elements position
+    #endregion
+
     private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort }
 
     //TODO: Create dynamic count
@@ -61,29 +66,17 @@ public class Sorting : MonoBehaviour
         switch (sortingType)
         {
             case SortingTypes.BubbleSort:
-                BubbleSorting bubbleSorting = new BubbleSorting();
-                IEnumerator bubble = bubbleSorting.BubbleSort(elements);
-                StartCoroutine(bubble);
+                StartCoroutine(BubbleSorting());
                 break;
-
             case SortingTypes.ShakerSort:
-                ShakerSorting shakerSorting = new ShakerSorting();
-                IEnumerator shaker = shakerSorting.ShakerSort(elements);
-                StartCoroutine(shaker);
+                StartCoroutine(ShakerSorting());
                 break;
-
             case SortingTypes.CombSort:
-                CombSorting combSorting = new CombSorting();
-                IEnumerator comb = combSorting.CombSort(elements);
-                StartCoroutine(comb);
+                StartCoroutine(CombSorting());
                 break;
-
             case SortingTypes.InsertionSort:
-                InsertionSorting insertionSorting = new InsertionSorting();
-                IEnumerator insertion = insertionSorting.InsertionSort(elements);
-                StartCoroutine(insertion);
+                StartCoroutine(InsertionSorting());
                 break;
-
             default:
                 break;
         }
@@ -106,4 +99,214 @@ public class Sorting : MonoBehaviour
             elements[random2].transform.position = new Vector3(elements[random1].transform.position.x, elements[random2].transform.localScale.y / 2, 0f);*/
         }
     }
+
+    #region Sorting implementation
+    // https://en.wikipedia.org/wiki/Bubble_sort
+    IEnumerator BubbleSorting()
+    {
+        Color defaultColor = Color.black;
+        Color pointerColor = Color.white;
+
+        bool sorted = true;
+        int max = elements.Count;
+
+        while (sorted)
+        {
+            sorted = false;
+            for (int i = 0; i < max - 1; i++)
+            {
+                // Change color pointed element
+                elements[i].gameObject.GetComponent<MeshRenderer>().material.color = pointerColor;
+
+                if (elements[i].transform.localScale.y > elements[i + 1].transform.localScale.y)
+                {
+                    Swap(elements, i, i + 1);
+                    #region Visualization
+                    Vector3 posOne, newPosOne, posTwo, newPosTwo;
+                    CalcNewPositions(elements, i, i + 1, out posOne, out newPosOne, out posTwo, out newPosTwo);
+
+                    while (Vector3.Distance(posOne, newPosOne) > 0.01f)
+                    {
+                        ChangePositions(elements, i, i + 1, ref posOne, newPosOne, ref posTwo, newPosTwo);
+                        yield return new WaitForSeconds(DELAY);
+                    }
+                    #endregion
+                    sorted = true;
+                }
+                else
+                {
+                    elements[i].gameObject.GetComponent<MeshRenderer>().material.color = defaultColor;
+                }
+            }
+            max--;
+
+            // Change color sorted elements
+            if (sorted)
+                elements[max].gameObject.GetComponent<MeshRenderer>().material.color = pointerColor;
+            else
+                for (int i = 0; i <= max; i++)
+                    elements[i].gameObject.GetComponent<MeshRenderer>().material.color = pointerColor;
+        }
+    }
+
+    // https://en.wikipedia.org/wiki/Cocktail_shaker_sort
+    IEnumerator ShakerSorting()
+    {
+        bool sorted = true;
+
+        int begin = 0;
+        int end = elements.Count - 1;
+
+        while (sorted)
+        {
+            sorted = false;
+
+            for (int i = begin; i < end; i++)
+            {
+                if (elements[i].transform.localScale.y > elements[i + 1].transform.localScale.y)
+                {
+                    Swap(elements, i, i + 1);
+                    sorted = true;
+                    #region Visualization
+                    Vector3 posOne, newPosOne, posTwo, newPosTwo;
+                    CalcNewPositions(elements, i, i + 1, out posOne, out newPosOne, out posTwo, out newPosTwo);
+
+                    while (Vector3.Distance(posOne, newPosOne) > 0.01f)
+                    {
+                        ChangePositions(elements, i, i + 1, ref posOne, newPosOne, ref posTwo, newPosTwo);
+                        yield return new WaitForSeconds(DELAY);
+                    }
+                    #endregion
+                }
+            }
+
+            if (sorted) end--;
+
+            for (int i = end; i > begin; i--)
+            {
+                if (elements[i].transform.localScale.y < elements[i - 1].transform.localScale.y)
+                {
+                    Swap(elements, i, i - 1);
+                    sorted = true;
+                    #region Visualization
+                    Vector3 posOne, newPosOne, posTwo, newPosTwo;
+                    CalcNewPositions(elements, i, i - 1, out posOne, out newPosOne, out posTwo, out newPosTwo);
+
+                    while (Vector3.Distance(posOne, newPosOne) > 0.01f)
+                    {
+                        ChangePositions(elements, i, i - 1, ref posOne, newPosOne, ref posTwo, newPosTwo);
+                        yield return new WaitForSeconds(DELAY);
+                    }
+                    #endregion
+                }
+            }
+
+            if (sorted) begin++;
+        }
+    }       
+
+    // https://en.wikipedia.org/wiki/Comb_sort
+    IEnumerator CombSorting()
+    {
+        float shrink = 1.24733f;
+        int step = elements.Count - 1;
+
+        while (step > 1)
+        {
+            for (int i = 0; i + step < elements.Count; i++)
+            {
+                if (elements[i].transform.localScale.y > elements[i + step].transform.localScale.y)
+                {
+                    Swap(elements, i, i + step);
+                    #region Visualization
+                    Vector3 posOne, newPosOne, posTwo, newPosTwo;
+                    CalcNewPositions(elements, i, i + step, out posOne, out newPosOne, out posTwo, out newPosTwo);
+
+                    while (Vector3.Distance(posOne, newPosOne) > 0.01f)
+                    {
+                        ChangePositions(elements, i, i + step, ref posOne, newPosOne, ref posTwo, newPosTwo);
+                        yield return new WaitForSeconds(DELAY);
+                    }
+                    #endregion
+                }
+            }
+
+            step = Mathf.FloorToInt(step / shrink);
+        }
+
+        // Last iteration when step = 1
+        bool sorted = true;
+        while (sorted)
+        {
+            sorted = false;
+            for (int i = 0; i + 1 < elements.Count; i++)
+            {
+                if (elements[i].transform.localScale.y > elements[i + 1].transform.localScale.y)
+                {
+                    Swap(elements, i, i + 1);
+                    #region Visualization
+                    Vector3 posOne, newPosOne, posTwo, newPosTwo;
+                    CalcNewPositions(elements, i, i + 1, out posOne, out newPosOne, out posTwo, out newPosTwo);
+
+                    while (Vector3.Distance(posOne, newPosOne) > 0.01f)
+                    {
+                        ChangePositions(elements, i, i + 1, ref posOne, newPosOne, ref posTwo, newPosTwo);
+                        yield return new WaitForSeconds(DELAY);
+                    }
+                    #endregion
+                    sorted = true;
+                }
+            }
+        }
+    }
+
+    // https://en.wikipedia.org/wiki/Insertion_sort
+    IEnumerator InsertionSorting()
+    {
+        for (int i = 1; i < elements.Count; i++)
+        {
+            int j = i;
+            while (j > 0 && elements[j - 1].transform.localScale.y > elements[j].transform.localScale.y)
+            {
+                Swap(elements, j - 1, j);
+                #region Visualization
+                Vector3 posOne, newPosOne, posTwo, newPosTwo;
+                CalcNewPositions(elements, j - 1, j, out posOne, out newPosOne, out posTwo, out newPosTwo);
+
+                while (Vector3.Distance(posOne, newPosOne) > 0.01f)
+                {
+                    ChangePositions(elements, j - 1, j, ref posOne, newPosOne, ref posTwo, newPosTwo);
+                    yield return new WaitForSeconds(DELAY);
+                }
+                #endregion
+                j--;
+            }
+        }
+    }
+    #endregion
+
+    #region Additional private methods
+    private void Swap(List<GameObject> _elements, int _index1, int _index2)
+    {
+        GameObject temp = _elements[_index1];
+        _elements[_index1] = _elements[_index2];
+        _elements[_index2] = temp;
+    }
+
+    private void CalcNewPositions(List<GameObject> elements, int index1, int index2, out Vector3 posOne, out Vector3 newPosOne, out Vector3 posTwo, out Vector3 newPosTwo)
+    {
+        posOne = elements[index1].transform.position;
+        newPosOne = new Vector3(elements[index2].transform.position.x, elements[index1].transform.localScale.y / 2, 0f);
+        posTwo = elements[index2].transform.position;
+        newPosTwo = new Vector3(elements[index1].transform.position.x, elements[index2].transform.localScale.y / 2, 0f);
+    }
+
+    private void ChangePositions(List<GameObject> elements, int index1, int index2, ref Vector3 posOne, Vector3 newPosOne, ref Vector3 posTwo, Vector3 newPosTwo)
+    {
+        posOne = Vector3.Lerp(posOne, newPosOne, SPEED * Time.deltaTime);
+        elements[index1].transform.position = posOne;
+        posTwo = Vector3.Lerp(posTwo, newPosTwo, SPEED * Time.deltaTime);
+        elements[index2].transform.position = posTwo;
+    }
+    #endregion
 }
