@@ -283,6 +283,14 @@ public class Sorting : MonoBehaviour
             }
         }
     }
+
+    // https://en.wikipedia.org/wiki/Tree_sort
+    IEnumerator Treesort()
+    {
+
+
+        yield return null;
+    }
     #endregion
 
     #region Additional private methods
@@ -308,5 +316,33 @@ public class Sorting : MonoBehaviour
         posTwo = Vector3.Lerp(posTwo, newPosTwo, SPEED * Time.deltaTime);
         elements[index2].transform.position = posTwo;
     }
+    #endregion
+
+    #region Additional classes
+    public class TreeNode<T> where T : System.IComparable
+    {
+        public TreeNode(T data)
+        {
+            this.data = data;
+        }
+
+        public T data { get; set; }
+        public TreeNode<T> leftSubTree { get; set; }
+        public TreeNode<T> rightSubTree { get; set; }
+
+        // Recursive adding node to tree
+        public void Insert(TreeNode<T> node)
+        {
+            if (node.data < data)
+            {
+
+            } else
+            {
+
+            }
+        }
+    }
+
+    Tree one = new Tree();
     #endregion
 }
