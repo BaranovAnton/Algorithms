@@ -10,7 +10,7 @@ public class Sorting : MonoBehaviour
     const float DELAY = 0.05f; // Delay between frames chaning elements position
     #endregion
 
-    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort }
+    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort, TreeSort }
 
     //TODO: Create dynamic count
     private const int COUNT = 21; // Count of elements for sorting
@@ -76,6 +76,9 @@ public class Sorting : MonoBehaviour
                 break;
             case SortingTypes.InsertionSort:
                 StartCoroutine(InsertionSorting());
+                break;
+            case SortingTypes.TreeSort:
+                StartCoroutine(TreeSorting());
                 break;
             default:
                 break;
@@ -285,9 +288,14 @@ public class Sorting : MonoBehaviour
     }
 
     // https://en.wikipedia.org/wiki/Tree_sort
-    IEnumerator Treesort()
+    IEnumerator TreeSorting()
     {
+        // Create binary tree
+        TreeNode treeNode = new TreeNode(elements[0]);
+        for (int i=1; i<elements.Count; i++)
+            treeNode.Insert(new TreeNode(elements[i]));
 
+        elements = treeNode.TreeToList();
 
         yield return null;
     }
@@ -319,27 +327,52 @@ public class Sorting : MonoBehaviour
     #endregion
 
     #region Additional classes
-    public class TreeNode<T> where T : System.IComparable
+    public class TreeNode
     {
-        public TreeNode(T data)
+        public TreeNode(GameObject data)
         {
             this.data = data;
         }
 
-        public T data { get; set; }
-        public TreeNode<T> leftSubTree { get; set; }
-        public TreeNode<T> rightSubTree { get; set; }
+        public GameObject data { get; set; }
+        public TreeNode leftSubTree { get; set; }
+        public TreeNode rightSubTree { get; set; }
 
         // Recursive adding node to tree
-        public void Insert(TreeNode<T> node)
+        public void Insert(TreeNode node)
         {
-            if (node.data < data)
+            // Specific solution
+            if (node.data.transform.localScale.y < data.transform.localScale.y)
             {
-
-            } else
-            {
-
+                if (leftSubTree == null)
+                    leftSubTree = node;
+                else
+                    leftSubTree.Insert(node);
             }
+            else
+            {
+                if (rightSubTree == null)
+                    rightSubTree = node;
+                else
+                    rightSubTree.Insert(node);
+            }
+        }
+
+        // Tree to sorting list
+        public List<GameObject> TreeToList(List<GameObject> tempElements = null)
+        {
+            if (tempElements == null)
+                tempElements = new List<GameObject>();
+
+            if (leftSubTree != null)
+                leftSubTree.TreeToList(tempElements);
+
+            tempElements.Add(data);
+
+            if (rightSubTree != null)
+                rightSubTree.TreeToList(tempElements);
+
+            return tempElements;
         }
     }
 
