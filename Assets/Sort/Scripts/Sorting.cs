@@ -295,7 +295,15 @@ public class Sorting : MonoBehaviour
         for (int i=1; i<elements.Count; i++)
             treeNode.Insert(new TreeNode(elements[i]));
 
+        // Retrieve elements in sorting order
         elements = treeNode.TreeToList();
+
+        // Change position (there is no visual delay)
+        for (int i = 0, pos = -COUNT / 2; i < COUNT; i++, pos++)
+        {
+            float height = elements[i].transform.localScale.y;
+            elements[i].transform.position = new Vector3(pos, height / 2, 0f);
+        }
 
         yield return null;
     }
