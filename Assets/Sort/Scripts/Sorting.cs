@@ -10,7 +10,7 @@ public class Sorting : MonoBehaviour
     const float DELAY = 0.05f; // Delay between frames chaning elements position
     #endregion
 
-    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort, TreeSort }
+    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort, TreeSort, QuickSort }
 
     //TODO: Create dynamic count
     private const int COUNT = 21; // Count of elements for sorting
@@ -79,6 +79,9 @@ public class Sorting : MonoBehaviour
                 break;
             case SortingTypes.TreeSort:
                 StartCoroutine(TreeSorting());
+                break;
+            case SortingTypes.QuickSort:
+                StartCoroutine(QuickSorting());
                 break;
             default:
                 break;
@@ -307,6 +310,27 @@ public class Sorting : MonoBehaviour
 
         yield return null;
     }
+
+    // https://en.wikipedia.org/wiki/Quicksort
+    IEnumerator QuickSorting()
+    {
+        GameObject[] elementsArray = elements.ToArray();
+
+        for (int i = 0; i < elementsArray.Length; i++)
+        {
+            print(elementsArray[i].transform.localScale.y + " ");
+        }
+
+        QuickSortRecursion(elementsArray, 0, elementsArray.Length - 1);
+
+        print("-----------------------------------");
+        for (int i=0; i<elementsArray.Length; i++)
+        {
+            print(elementsArray[i].transform.localScale.y + " ");
+        }
+
+        yield return null;
+    }
     #endregion
 
     #region Additional private methods
@@ -331,6 +355,40 @@ public class Sorting : MonoBehaviour
         elements[index1].transform.position = posOne;
         posTwo = Vector3.Lerp(posTwo, newPosTwo, SPEED * Time.deltaTime);
         elements[index2].transform.position = posTwo;
+    }
+
+    private int Partition(GameObject[] _nums, int _low, int _high)
+    {
+        // Choose middle element like the pivot
+        GameObject pivot = _nums[(_low + _high) / 2];
+        int i = _low - 1;
+        int j = _high + 1;
+
+        while (true)
+        {
+            i += 1;
+            while (_nums[i].transform.localScale.y < pivot.transform.localScale.y)
+                i += 1;
+
+            j -= 1;
+            while (_nums[j].transform.localScale.y > pivot.transform.localScale.y)
+                j -= 1;
+
+            // Swap elements
+            GameObject num = _nums[i];
+            _nums[i] = _nums[j];
+            _nums[j] = num;
+        }
+    }
+
+    private void QuickSortRecursion(GameObject[] _nums, int _low, int _high)
+    {
+        if (_low < _high)
+        {
+            int split_index = Partition(_nums, _low, _high);
+            QuickSortRecursion(_nums, _low, split_index);
+            QuickSortRecursion(_nums, split_index + 1, _high);
+        }
     }
     #endregion
 
@@ -383,7 +441,5 @@ public class Sorting : MonoBehaviour
             return tempElements;
         }
     }
-
-    Tree one = new Tree();
     #endregion
 }
