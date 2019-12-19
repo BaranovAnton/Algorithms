@@ -316,17 +316,15 @@ public class Sorting : MonoBehaviour
     {
         GameObject[] elementsArray = elements.ToArray();
 
-        for (int i = 0; i < elementsArray.Length; i++)
-        {
-            print(elementsArray[i].transform.localScale.y + " ");
-        }
+        QuickSort(elementsArray, 0, elementsArray.Length - 1);
 
-        QuickSortRecursion(elementsArray, 0, elementsArray.Length - 1);
+        elements = new List<GameObject>(elementsArray);
 
-        print("-----------------------------------");
-        for (int i=0; i<elementsArray.Length; i++)
+        // Change position (there is no visual delay)
+        for (int i = 0, pos = -COUNT / 2; i < COUNT; i++, pos++)
         {
-            print(elementsArray[i].transform.localScale.y + " ");
+            float height = elements[i].transform.localScale.y;
+            elements[i].transform.position = new Vector3(pos, height / 2, 0f);
         }
 
         yield return null;
@@ -357,37 +355,30 @@ public class Sorting : MonoBehaviour
         elements[index2].transform.position = posTwo;
     }
 
-    private int Partition(GameObject[] _nums, int _low, int _high)
+    private int Partition(GameObject[] nums, int low, int high)
     {
-        // Choose middle element like the pivot
-        GameObject pivot = _nums[(_low + _high) / 2];
-        int i = _low - 1;
-        int j = _high + 1;
-
-        while (true)
+        // Choose pivot element
+        int pivot = low;
+        for (int i = low; i <= high; i++)
         {
-            i += 1;
-            while (_nums[i].transform.localScale.y < pivot.transform.localScale.y)
-                i += 1;
-
-            j -= 1;
-            while (_nums[j].transform.localScale.y > pivot.transform.localScale.y)
-                j -= 1;
-
-            // Swap elements
-            GameObject num = _nums[i];
-            _nums[i] = _nums[j];
-            _nums[j] = num;
+            if (nums[i].transform.localScale.y <= nums[high].transform.localScale.y)
+            {
+                GameObject temp = nums[pivot];
+                nums[pivot] = nums[i];
+                nums[i] = temp;
+                pivot += 1;
+            }
         }
+        return pivot - 1;
     }
 
-    private void QuickSortRecursion(GameObject[] _nums, int _low, int _high)
+    private void QuickSort(GameObject[] nums, int low, int high)
     {
-        if (_low < _high)
+        if (low < high)
         {
-            int split_index = Partition(_nums, _low, _high);
-            QuickSortRecursion(_nums, _low, split_index);
-            QuickSortRecursion(_nums, split_index + 1, _high);
+            int p = Partition(nums, low, high);
+            QuickSort(nums, low, p - 1);
+            QuickSort(nums, p + 1, high);
         }
     }
     #endregion
