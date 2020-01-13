@@ -10,7 +10,7 @@ public class Sorting : MonoBehaviour
     const float DELAY = 0.05f; // Delay between frames chaning elements position
     #endregion
 
-    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort, TreeSort, QuickSort }
+    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort, GnomeSort, TreeSort, QuickSort }
 
     //TODO: Create dynamic count
     private const int COUNT = 21; // Count of elements for sorting
@@ -76,6 +76,9 @@ public class Sorting : MonoBehaviour
                 break;
             case SortingTypes.InsertionSort:
                 StartCoroutine(InsertionSorting());
+                break;
+            case SortingTypes.GnomeSort:
+                StartCoroutine(GnomeSorting());
                 break;
             case SortingTypes.TreeSort:
                 StartCoroutine(TreeSorting());
@@ -286,6 +289,42 @@ public class Sorting : MonoBehaviour
                 }
                 #endregion
                 j--;
+            }
+        }
+    }
+
+    // https://en.wikipedia.org/wiki/Gnome_sort
+    IEnumerator GnomeSorting()
+    {
+        int i = 1, j = 2;
+
+        while (i < elements.Count)
+        {
+            if (elements[i - 1].transform.localScale.y < elements[i].transform.localScale.y)
+            {
+                i = j;
+                j++;
+            }
+            else
+            {
+                Swap(elements, i - 1, i);
+                #region Visualization
+                Vector3 posOne, newPosOne, posTwo, newPosTwo;
+                CalcNewPositions(elements, i - 1, i, out posOne, out newPosOne, out posTwo, out newPosTwo);
+
+                while (Vector3.Distance(posOne, newPosOne) > 0.01f)
+                {
+                    ChangePositions(elements, i - 1, i, ref posOne, newPosOne, ref posTwo, newPosTwo);
+                    yield return new WaitForSeconds(DELAY);
+                }
+                #endregion
+
+                i--;
+                if (i == 0)
+                {
+                    i = j;
+                    j++;
+                }
             }
         }
     }
