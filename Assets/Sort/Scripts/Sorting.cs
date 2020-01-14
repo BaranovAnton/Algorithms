@@ -10,7 +10,7 @@ public class Sorting : MonoBehaviour
     const float DELAY = 0.05f; // Delay between frames chaning elements position
     #endregion
 
-    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort, GnomeSort, TreeSort, QuickSort }
+    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort, GnomeSort, TreeSort, QuickSort, SelectionSort }
 
     //TODO: Create dynamic count
     private const int COUNT = 21; // Count of elements for sorting
@@ -85,6 +85,9 @@ public class Sorting : MonoBehaviour
                 break;
             case SortingTypes.QuickSort:
                 StartCoroutine(QuickSorting());
+                break;
+            case SortingTypes.SelectionSort:
+                StartCoroutine(SelectionSorting());
                 break;
             default:
                 break;
@@ -364,6 +367,43 @@ public class Sorting : MonoBehaviour
         {
             float height = elements[i].transform.localScale.y;
             elements[i].transform.position = new Vector3(pos, height / 2, 0f);
+        }
+
+        yield return null;
+    }
+
+    // https://en.wikipedia.org/wiki/Selection_sort
+    IEnumerator SelectionSorting()
+    {
+        int aLength = elements.Count;
+
+        for (int i = 0; i < aLength - 1; i++)
+        {
+            int jMin = i;
+
+            for (int j=i+1; j < aLength; j++)
+            {
+                if (elements[j].transform.localScale.y < elements[jMin].transform.localScale.y)
+                {
+                    jMin = j;
+                }
+            }
+
+            if (jMin != i)
+            {
+                Swap(elements, i, jMin);
+
+                #region Visualization
+                Vector3 posOne, newPosOne, posTwo, newPosTwo;
+                CalcNewPositions(elements, i, jMin, out posOne, out newPosOne, out posTwo, out newPosTwo);
+
+                while (Vector3.Distance(posOne, newPosOne) > 0.01f)
+                {
+                    ChangePositions(elements, i, jMin, ref posOne, newPosOne, ref posTwo, newPosTwo);
+                    yield return new WaitForSeconds(DELAY);
+                }
+                #endregion
+            }
         }
 
         yield return null;
