@@ -10,7 +10,7 @@ public class Sorting : MonoBehaviour
     const float DELAY = 0.05f; // Delay between frames chaning elements position
     #endregion
 
-    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort, GnomeSort, TreeSort, QuickSort, SelectionSort }
+    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort, GnomeSort, TreeSort, QuickSort, SelectionSort, HeapSort }
 
     //TODO: Create dynamic count
     private const int COUNT = 21; // Count of elements for sorting
@@ -88,6 +88,9 @@ public class Sorting : MonoBehaviour
                 break;
             case SortingTypes.SelectionSort:
                 StartCoroutine(SelectionSorting());
+                break;
+            case SortingTypes.HeapSort:
+                StartCoroutine(HeapSorting());
                 break;
             default:
                 break;
@@ -375,13 +378,11 @@ public class Sorting : MonoBehaviour
     // https://en.wikipedia.org/wiki/Selection_sort
     IEnumerator SelectionSorting()
     {
-        int aLength = elements.Count;
-
-        for (int i = 0; i < aLength - 1; i++)
+        for (int i = 0; i < elements.Count - 1; i++)
         {
             int jMin = i;
 
-            for (int j=i+1; j < aLength; j++)
+            for (int j=i+1; j < elements.Count; j++)
             {
                 if (elements[j].transform.localScale.y < elements[jMin].transform.localScale.y)
                 {
@@ -403,6 +404,30 @@ public class Sorting : MonoBehaviour
                     yield return new WaitForSeconds(DELAY);
                 }
                 #endregion
+            }
+        }
+
+        yield return null;
+    }
+
+    // https://en.wikipedia.org/wiki/Heapsort
+    IEnumerator HeapSorting()
+    {
+        for (int i = 0; i < elements.Count - 1; i++)
+        {
+            int jMin = i;
+
+            for (int j = i + 1; j < elements.Count; j++)
+            {
+                if (elements[j].transform.localScale.y < elements[jMin].transform.localScale.y)
+                {
+                    jMin = j;
+                }
+            }
+
+            if (jMin != i)
+            {
+                Swap(elements, i, jMin);
             }
         }
 
@@ -510,6 +535,11 @@ public class Sorting : MonoBehaviour
 
             return tempElements;
         }
+    }
+
+    public class Heap
+    {
+
     }
     #endregion
 }
