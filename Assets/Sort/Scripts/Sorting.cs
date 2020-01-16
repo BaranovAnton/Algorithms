@@ -539,7 +539,29 @@ public class Sorting : MonoBehaviour
 
     public class Heap
     {
+        private List<int> list;
 
+        public int HeapSize 
+        {
+            get { return list.Count; }
+        }
+
+        public void Add(int value)
+        {
+            list.Add(value);
+            int i = HeapSize - 1;
+            int parent = (i - 1) / 2;
+
+            while (i > 0 && list[parent] < list[i])
+            {
+                int temp = list[i];
+                list[i] = list[parent];
+                list[parent] = temp;
+
+                i = parent;
+                parent = (i - 1) / 2;
+            }
+        }
     }
     #endregion
 }
