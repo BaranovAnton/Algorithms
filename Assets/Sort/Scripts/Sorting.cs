@@ -413,22 +413,19 @@ public class Sorting : MonoBehaviour
     // https://en.wikipedia.org/wiki/Heapsort
     IEnumerator HeapSorting()
     {
-        for (int i = 0; i < elements.Count - 1; i++)
+        for (int i=0; i<elements.Count; i++)
         {
-            int jMin = i;
+            print(elements[i].transform.localScale.y);
+        }
 
-            for (int j = i + 1; j < elements.Count; j++)
-            {
-                if (elements[j].transform.localScale.y < elements[jMin].transform.localScale.y)
-                {
-                    jMin = j;
-                }
-            }
+        Heap heap = new Heap();
+        heap.HeapSort(elements);
 
-            if (jMin != i)
-            {
-                Swap(elements, i, jMin);
-            }
+        print("-----------------------------------");
+
+        for (int i = 0; i < elements.Count; i++)
+        {
+            print(elements[i].transform.localScale.y);
         }
 
         yield return null;
@@ -537,18 +534,107 @@ public class Sorting : MonoBehaviour
         }
     }
 
+    // Specific structure
     public class Heap
+    {
+        private List<GameObject> elements;
+
+        public int HeapSize 
+        {
+            get { return elements.Count; }
+        }
+
+        public void Add(GameObject value)
+        {
+            elements.Add(value);
+            int i = HeapSize - 1;
+            int parent = (i - 1) / 2;
+
+            while (i > 0 && elements[parent].transform.localScale.y < elements[i].transform.localScale.y)
+            {
+                GameObject temp = elements[i];
+                elements[i] = elements[parent];
+                elements[parent] = temp;
+
+                i = parent;
+                parent = (i - 1) / 2;
+            }
+        }
+
+        public void Heapify(int i)
+        {
+            int leftChild, rightChild, largestChild;
+
+            for(;;)
+            {
+                leftChild = 2 * i + 1;
+                rightChild = 2 * i + 2;
+                largestChild = i;
+
+                if (leftChild < HeapSize && elements[leftChild].transform.localScale.y > elements[largestChild].transform.localScale.y)
+                    largestChild = leftChild;
+
+                if (rightChild < HeapSize && elements[rightChild].transform.localScale.y > elements[largestChild].transform.localScale.y)
+                    largestChild = rightChild;
+
+                if (largestChild == i)
+                    break;
+
+                GameObject temp = elements[i];
+                elements[i] = elements[largestChild];
+                elements[largestChild] = temp;
+                i = largestChild;
+            }
+        }
+
+        public void BuildHeap(List<GameObject> sourceList)
+        {
+            elements = sourceList;
+
+            for (int i = HeapSize / 2; i >= 0; i--)
+            {
+                Heapify(i);
+            }
+        }
+
+        public GameObject GetMax()
+        {
+            GameObject result = elements[0];
+            elements[0] = elements[HeapSize - 1];
+            elements.RemoveAt(HeapSize - 1);
+
+            return result;
+        }
+
+        public void HeapSort(List<GameObject> list)
+        {
+            BuildHeap(list);
+
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                list[i] = GetMax();
+                Heapify(0);
+            }
+        }
+    }
+    #endregion
+}
+
+/*
+ * Classical Heap structure
+ * 
+ public class Heap
     {
         private List<int> list;
 
         public int HeapSize 
         {
-            get { return list.Count; }
+            get { return elements.Count; }
         }
 
-        public void Add(int value)
+        public void Add(GameObject value)
         {
-            list.Add(value);
+            elements.Add(value);
             int i = HeapSize - 1;
             int parent = (i - 1) / 2;
 
@@ -618,5 +704,4 @@ public class Sorting : MonoBehaviour
             }
         }
     }
-    #endregion
-}
+*/
