@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -413,19 +414,14 @@ public class Sorting : MonoBehaviour
     // https://en.wikipedia.org/wiki/Heapsort
     IEnumerator HeapSorting()
     {
-        for (int i=0; i<elements.Count; i++)
-        {
-            print(elements[i].transform.localScale.y);
-        }
-
         Heap heap = new Heap();
         heap.HeapSort(elements);
 
-        print("-----------------------------------");
-
-        for (int i = 0; i < elements.Count; i++)
+        // Change position (there is no visual delay)
+        for (int i = 0, pos = -COUNT / 2; i < COUNT; i++, pos++)
         {
-            print(elements[i].transform.localScale.y);
+            float height = elements[i].transform.localScale.y;
+            elements[i].transform.position = new Vector3(pos, height / 2, 0f);
         }
 
         yield return null;
@@ -534,62 +530,44 @@ public class Sorting : MonoBehaviour
         }
     }
 
-    // Specific structure
+    // Specific heap structure
     public class Heap
     {
-        private List<GameObject> elements;
+        private List<GameObject> list;
 
-        public int HeapSize 
-        {
-            get { return elements.Count; }
-        }
-
-        public void Add(GameObject value)
-        {
-            elements.Add(value);
-            int i = HeapSize - 1;
-            int parent = (i - 1) / 2;
-
-            while (i > 0 && elements[parent].transform.localScale.y < elements[i].transform.localScale.y)
-            {
-                GameObject temp = elements[i];
-                elements[i] = elements[parent];
-                elements[parent] = temp;
-
-                i = parent;
-                parent = (i - 1) / 2;
-            }
+        public int HeapSize {
+            get { return list.Count; }
         }
 
         public void Heapify(int i)
         {
             int leftChild, rightChild, largestChild;
 
-            for(;;)
+            for (; ; )
             {
                 leftChild = 2 * i + 1;
                 rightChild = 2 * i + 2;
                 largestChild = i;
 
-                if (leftChild < HeapSize && elements[leftChild].transform.localScale.y > elements[largestChild].transform.localScale.y)
+                if (leftChild < HeapSize && list[leftChild].transform.localScale.y > list[largestChild].transform.localScale.y)
                     largestChild = leftChild;
 
-                if (rightChild < HeapSize && elements[rightChild].transform.localScale.y > elements[largestChild].transform.localScale.y)
+                if (rightChild < HeapSize && list[rightChild].transform.localScale.y > list[largestChild].transform.localScale.y)
                     largestChild = rightChild;
 
                 if (largestChild == i)
                     break;
 
-                GameObject temp = elements[i];
-                elements[i] = elements[largestChild];
-                elements[largestChild] = temp;
+                GameObject temp = list[i];
+                list[i] = list[largestChild];
+                list[largestChild] = temp;
                 i = largestChild;
             }
         }
 
-        public void BuildHeap(List<GameObject> sourceList)
+        public void BuildHeap(GameObject[] sourceArray)
         {
-            elements = sourceList;
+            list = sourceArray.ToList();
 
             for (int i = HeapSize / 2; i >= 0; i--)
             {
@@ -599,109 +577,23 @@ public class Sorting : MonoBehaviour
 
         public GameObject GetMax()
         {
-            GameObject result = elements[0];
-            elements[0] = elements[HeapSize - 1];
-            elements.RemoveAt(HeapSize - 1);
-
-            return result;
-        }
-
-        public void HeapSort(List<GameObject> list)
-        {
-            BuildHeap(list);
-
-            for (int i = list.Count - 1; i >= 0; i--)
-            {
-                list[i] = GetMax();
-                Heapify(0);
-            }
-        }
-    }
-    #endregion
-}
-
-/*
- * Classical Heap structure
- * 
- public class Heap
-    {
-        private List<int> list;
-
-        public int HeapSize 
-        {
-            get { return elements.Count; }
-        }
-
-        public void Add(GameObject value)
-        {
-            elements.Add(value);
-            int i = HeapSize - 1;
-            int parent = (i - 1) / 2;
-
-            while (i > 0 && list[parent] < list[i])
-            {
-                int temp = list[i];
-                list[i] = list[parent];
-                list[parent] = temp;
-
-                i = parent;
-                parent = (i - 1) / 2;
-            }
-        }
-
-        public void Heapify(int i)
-        {
-            int leftChild, rightChild, largestChild;
-
-            for(;;)
-            {
-                leftChild = 2 * i + 1;
-                rightChild = 2 * i + 2;
-                largestChild = i;
-
-                if (leftChild < HeapSize && list[leftChild] > list[largestChild])
-                    largestChild = leftChild;
-
-                if (rightChild < HeapSize && list[rightChild] > list[largestChild])
-                    largestChild = rightChild;
-
-                if (largestChild == i)
-                    break;
-
-                int temp = list[i];
-                list[i] = list[largestChild];
-                list[largestChild] = temp;
-                i = largestChild;
-            }
-        }
-
-        public void BuildHeap(int[] sourceArray)
-        {
-            list.AddRange(sourceArray);
-
-            for (int i = HeapSize / 2; i >= 0; i--)
-            {
-                Heapify(i);
-            }
-        }
-
-        public int GetMax()
-        {
-            int result = list[0];
+            GameObject result = list[0];
             list[0] = list[HeapSize - 1];
             list.RemoveAt(HeapSize - 1);
 
             return result;
         }
 
-        public void HeapSort(int[] array)
+        public void HeapSort(List<GameObject> sourceList)
         {
-            BuildHeap(array);
-            for (int i = array.Length - 1; i >= 0; i--)
+            BuildHeap(sourceList.ToArray());
+
+            for (int i = sourceList.Count - 1; i >= 0; i--)
             {
-                array[i] = GetMax();
+                sourceList[i] = GetMax();
                 Heapify(0);
             }
         }
     }
-*/
+    #endregion
+}
