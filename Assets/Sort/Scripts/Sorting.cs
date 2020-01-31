@@ -11,7 +11,7 @@ public class Sorting : MonoBehaviour
     const float DELAY = 0.05f; // Delay between frames chaning elements position
     #endregion
 
-    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort, GnomeSort, TreeSort, QuickSort, SelectionSort, HeapSort }
+    private enum SortingTypes { BubbleSort, ShakerSort, CombSort, InsertionSort, GnomeSort, TreeSort, QuickSort, SelectionSort, HeapSort, Counting }
 
     //TODO: Create dynamic count
     private const int COUNT = 21; // Count of elements for sorting
@@ -92,6 +92,9 @@ public class Sorting : MonoBehaviour
                 break;
             case SortingTypes.HeapSort:
                 StartCoroutine(HeapSorting());
+                break;
+            case SortingTypes.Counting:
+                StartCoroutine(CountingSorting());
                 break;
             default:
                 break;
@@ -423,6 +426,51 @@ public class Sorting : MonoBehaviour
             float height = elements[i].transform.localScale.y;
             elements[i].transform.position = new Vector3(pos, height / 2, 0f);
         }
+
+        yield return null;
+    }
+
+    // https://en.wikipedia.org/wiki/Counting_sort
+    IEnumerator CountingSorting()
+    {
+        /*for i = 0 to k - 1
+            C[i] = 0;
+        for i = 0 to n - 1
+            C[A[i]] = C[A[i]] + 1;
+        b = 0;
+        for j = 0 to k - 1
+            for i = 0 to C[j] - 1
+                A[b] = j;
+                b = b + 1;*/
+
+        /*for (int i = 0; i < elements.Count - 1; i++)
+        {
+            int jMin = i;
+
+            for (int j = i + 1; j < elements.Count; j++)
+            {
+                if (elements[j].transform.localScale.y < elements[jMin].transform.localScale.y)
+                {
+                    jMin = j;
+                }
+            }
+
+            if (jMin != i)
+            {
+                Swap(elements, i, jMin);
+
+                #region Visualization
+                Vector3 posOne, newPosOne, posTwo, newPosTwo;
+                CalcNewPositions(elements, i, jMin, out posOne, out newPosOne, out posTwo, out newPosTwo);
+
+                while (Vector3.Distance(posOne, newPosOne) > 0.01f)
+                {
+                    ChangePositions(elements, i, jMin, ref posOne, newPosOne, ref posTwo, newPosTwo);
+                    yield return new WaitForSeconds(DELAY);
+                }
+                #endregion
+            }
+        }*/
 
         yield return null;
     }
