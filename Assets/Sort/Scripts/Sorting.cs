@@ -50,7 +50,7 @@ public class Sorting : MonoBehaviour
         {          
             GameObject block = GameObject.CreatePrimitive(PrimitiveType.Cube);
             block.name = "Element_" + i;
-            float height = Random.Range(1f, 10f);
+            float height = Random.Range(1, 10);
             block.transform.localScale = new Vector3(0.9f, height, 0.9f);
             block.transform.position = new Vector3(pos, height/2, 0f);
             block.transform.SetParent(this.transform);
@@ -431,46 +431,42 @@ public class Sorting : MonoBehaviour
     }
 
     // https://en.wikipedia.org/wiki/Counting_sort
+    // Element value has to be less than count of elements
+    // Elements have to be integer
     IEnumerator CountingSorting()
     {
-        /*for i = 0 to k - 1
-            C[i] = 0;
-        for i = 0 to n - 1
-            C[A[i]] = C[A[i]] + 1;
-        b = 0;
-        for j = 0 to k - 1
-            for i = 0 to C[j] - 1
-                A[b] = j;
-                b = b + 1;*/
+        int[] tempArray = new int[elements.Count];
+        for (int i=0; i< tempArray.Length; i++)
+            tempArray[(int)elements[i].transform.localScale.y] = tempArray[(int)elements[i].transform.localScale.y] + 1;
 
-        /*for (int i = 0; i < elements.Count - 1; i++)
+        int b = 0;
+        for (int i=0; i< tempArray.Length; i++)
         {
-            int jMin = i;
-
-            for (int j = i + 1; j < elements.Count; j++)
+            for (int j=0; j<tempArray[i]; j++)
             {
-                if (elements[j].transform.localScale.y < elements[jMin].transform.localScale.y)
-                {
-                    jMin = j;
-                }
-            }
-
-            if (jMin != i)
-            {
-                Swap(elements, i, jMin);
+                elements[b].transform.localScale = new Vector3(elements[b].transform.localScale.x, i, elements[b].transform.localScale.z);
 
                 #region Visualization
-                Vector3 posOne, newPosOne, posTwo, newPosTwo;
-                CalcNewPositions(elements, i, jMin, out posOne, out newPosOne, out posTwo, out newPosTwo);
+                /*Vector3 posOne, newPosOne, posTwo, newPosTwo;
+                CalcNewPositions(elements, b, b+1, out posOne, out newPosOne, out posTwo, out newPosTwo);
 
                 while (Vector3.Distance(posOne, newPosOne) > 0.01f)
                 {
-                    ChangePositions(elements, i, jMin, ref posOne, newPosOne, ref posTwo, newPosTwo);
+                    ChangePositions(elements, b, b+1, ref posOne, newPosOne, ref posTwo, newPosTwo);
                     yield return new WaitForSeconds(DELAY);
-                }
+                }*/
                 #endregion
+
+                b++;
             }
-        }*/
+        }
+
+        // Change position (there is no visual delay)
+        for (int i = 0, pos = -COUNT / 2; i < COUNT; i++, pos++)
+        {
+            float height = elements[i].transform.localScale.y;
+            elements[i].transform.position = new Vector3(pos, height / 2, 0f);
+        }
 
         yield return null;
     }
