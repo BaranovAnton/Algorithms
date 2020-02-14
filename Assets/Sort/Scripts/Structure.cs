@@ -5,6 +5,24 @@ using UnityEngine;
 
 public class Structures : MonoBehaviour
 {
+    // Stack
+    public class Stack
+    {
+
+    }
+
+    // Queue
+    public class Queue
+    {
+
+    }
+
+    // Dequeue
+    public class Dequeue
+    {
+
+    }
+
     // Binary tree
     // TODO: Create this solution classical
     public class TreeNode
@@ -136,5 +154,23 @@ public class Structures : MonoBehaviour
                 Heapify(0);
             }
         }
+    }
+
+    // Hash table
+    public class HashTable
+    {
+
+    }
+
+    // Linked List
+    public class LinkedList
+    {
+
+    }
+
+    // Graph
+    public class Graph
+    {
+
     }
 }
