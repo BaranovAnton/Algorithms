@@ -8,7 +8,31 @@ public class Structures : MonoBehaviour
     // Stack
     public class Stack
     {
+        int[] stack = new int[1000]; // Just for simple example
+        int head = -1;
 
+        public void Push(int _element)
+        {
+            head++;
+            stack[head] = _element;
+        }
+
+        public int? Pop()
+        {
+            if (head != -1)
+            {
+                head--;
+                return stack[head + 1];
+            } else
+            {
+                return null; // Try to return element from empty Stack
+            }
+        } 
+
+        public bool IsEmpty()
+        {
+            return head == -1;
+        }
     }
 
     // Queue
@@ -24,23 +48,21 @@ public class Structures : MonoBehaviour
     }
 
     // Binary tree
-    // TODO: Create this solution classical
     public class TreeNode
     {
-        public TreeNode(GameObject data)
+        public TreeNode(int data)
         {
             this.data = data;
         }
 
-        public GameObject data { get; set; }
+        public int data { get; set; }
         public TreeNode leftSubTree { get; set; }
         public TreeNode rightSubTree { get; set; }
 
         // Recursive adding node to tree
         public void Insert(TreeNode node)
         {
-            // Specific solution
-            if (node.data.transform.localScale.y < data.transform.localScale.y)
+            if (node.data < data)
             {
                 if (leftSubTree == null)
                     leftSubTree = node;
@@ -57,7 +79,7 @@ public class Structures : MonoBehaviour
         }
 
         // Tree to sorting list
-        public List<GameObject> TreeToList(List<GameObject> tempElements = null)
+        /*public List<GameObject> TreeToList(List<GameObject> tempElements = null)
         {
             if (tempElements == null)
                 tempElements = new List<GameObject>();
@@ -71,7 +93,7 @@ public class Structures : MonoBehaviour
                 rightSubTree.TreeToList(tempElements);
 
             return tempElements;
-        }
+        }*/
     }
 
     // Binary heap
