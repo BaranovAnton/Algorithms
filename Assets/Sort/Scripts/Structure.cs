@@ -8,13 +8,13 @@ public class Structures : MonoBehaviour
     // Stack
     public class Stack
     {
-        int[] stack = new int[1000]; // Just for simple example
+        List<int> stack = new List<int>();
         int head = -1;
 
         public void Push(int _element)
         {
             head++;
-            stack[head] = _element;
+            stack.Add(_element);
         }
 
         public int? Pop()
@@ -29,6 +29,18 @@ public class Structures : MonoBehaviour
             }
         } 
 
+        public int? Peek()
+        {
+            if (head != -1)
+            {
+                return stack[head + 1];
+            }
+            else
+            {
+                return null; // Try to return element from empty Stack
+            }
+        }
+
         public bool IsEmpty()
         {
             return head == -1;
@@ -38,7 +50,38 @@ public class Structures : MonoBehaviour
     // Queue
     public class Queue
     {
+        int[] queue;
+        int head = 0;
+        int tail = 0;
 
+        public Queue(int _count)
+        {
+            queue = new int[_count];
+        }
+
+        public void Push(int _element)
+        {
+            head++;
+            queue[head] = _element;
+        }
+
+        public int? Pop()
+        {
+            if (head != -1)
+            {
+                head--;
+                return queue[head + 1];
+            }
+            else
+            {
+                return null; // Try to return element from empty Stack
+            }
+        }
+
+        public bool IsEmpty()
+        {
+            return head == tail;
+        }
     }
 
     // Dequeue
