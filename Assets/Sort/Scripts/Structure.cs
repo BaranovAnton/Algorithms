@@ -6,15 +6,21 @@ using UnityEngine;
 public class Structures : MonoBehaviour
 {
     // Stack
+    // Simple example, there is a limitation of count
     public class Stack
     {
-        List<int> stack = new List<int>();
+        int[] stack;
         int head = -1;
+
+        public Stack(int _count)
+        {
+            stack = new int[_count];
+        }
 
         public void Push(int _element)
         {
             head++;
-            stack.Add(_element);
+            stack[head] = _element;
         }
 
         public int? Pop()
@@ -48,9 +54,10 @@ public class Structures : MonoBehaviour
     }
 
     // Queue
+    // Simple example, there is a limitation of count
     public class Queue
     {
-        int[] queue;
+        int[] queue = new int[1000];
         int head = 0;
         int tail = 0;
 
@@ -61,16 +68,16 @@ public class Structures : MonoBehaviour
 
         public void Push(int _element)
         {
-            head++;
-            queue[head] = _element;
+            queue[tail] = _element;
+            tail++;
         }
 
         public int? Pop()
         {
-            if (head != -1)
+            if (head != tail)
             {
-                head--;
-                return queue[head + 1];
+                head++;
+                return queue[head - 1];
             }
             else
             {
