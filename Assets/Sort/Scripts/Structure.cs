@@ -39,7 +39,7 @@ public class Structures : MonoBehaviour
         {
             if (head != -1)
             {
-                return stack[head + 1];
+                return stack[head];
             }
             else
             {
@@ -61,11 +61,6 @@ public class Structures : MonoBehaviour
         int head = 0;
         int tail = 0;
 
-        public Queue(int _count)
-        {
-            queue = new int[_count];
-        }
-
         public void Push(int _element)
         {
             queue[tail] = _element;
@@ -85,6 +80,18 @@ public class Structures : MonoBehaviour
             }
         }
 
+        public int? Peek()
+        {
+            if (head != tail)
+            {
+                return queue[head];
+            }
+            else
+            {
+                return null; // Try to return element from empty Stack
+            }
+        }
+
         public bool IsEmpty()
         {
             return head == tail;
@@ -92,9 +99,79 @@ public class Structures : MonoBehaviour
     }
 
     // Dequeue
+    // Simple example, there is a limitation of count
     public class Dequeue
     {
+        int[] dequeue = new int[2000];
+        int head = 1000;
+        int tail = 1000;
 
+        public void PushFront(int _element)
+        {
+            head--;
+            dequeue[head] = _element;
+        }
+
+        public void PushBack(int _element)
+        {
+            dequeue[tail] = _element;
+            tail++;
+        }
+
+        public int? PopFront()
+        {
+            if (head != tail)
+            {
+                head++;
+                return dequeue[head - 1];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public int? PopBack()
+        {
+            if (head != tail)
+            {
+                tail--;
+                return dequeue[tail];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public int? PeekFront()
+        {
+            if (head != tail)
+            {
+                return dequeue[head];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public int? PeekBack()
+        {
+            if (head != tail)
+            {
+                return dequeue[tail];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public bool IsEmpty()
+        {
+            return head == tail;
+        }
     }
 
     // Binary tree
