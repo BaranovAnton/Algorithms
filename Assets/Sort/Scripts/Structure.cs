@@ -311,11 +311,60 @@ public class Structures : MonoBehaviour
 
     }
 
-    // Linked List
-    public class LinkedList
+    // Linked List (universal for types)
+    public class LLNode<T>
     {
+        public T data { get; set; }
+        public LLNode<T> next { get; set; }
+        public LLNode<T> prev { get; set; }
 
+        public LLNode(T _data)
+        {
+            data = _data;
+        }
     }
+    public class LinkedList<T> : IEnumerable<T>
+    {
+        private LLNode<T> head = null;
+        private LLNode<T> tail = null;
+
+        private int count;
+        public int Count { get => count; }
+
+        public void Add(T _data)
+        {
+            var node = new LLNode<T>(_data);
+            if (head == null)
+                head = node;
+            else
+                tail.next = node;
+
+            tail = node;
+            count++;
+        }
+
+        public void Delete<T>(T _data)
+        {
+
+        }
+
+        public void Clear()
+        {
+
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+
+        }
+    }
+
+
 
     // Graph
     public class Graph
